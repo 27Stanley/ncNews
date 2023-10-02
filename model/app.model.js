@@ -1,0 +1,9 @@
+const db = require ("../db/connection.js")
+
+exports.fetchAllTopics = () => {
+    const query = `SELECT * FROM topics;`
+
+    return db.query(query).then((result) => {
+        return result.rows
+    })
+}
