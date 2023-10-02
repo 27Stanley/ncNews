@@ -15,6 +15,7 @@ const data = require ("./db/data/test-data/index.js")
 //     })
 // })
 
+
 beforeEach(() => {
     return seed(data)
 })
@@ -22,7 +23,6 @@ beforeEach(() => {
 afterAll(() => {
     return db.end()
 })
-
 
 
 describe("GET /api/topics", () => {
@@ -38,6 +38,7 @@ describe("GET /api/topics", () => {
     })
 })
 
+
 describe("GET /api", () => {
     test("returns a json representation of all the available endpoints of the api", () => {
         return request(app)
@@ -46,6 +47,42 @@ describe("GET /api", () => {
         .then(({body}) => {
             expect(typeof body).toBe("object")
             expect(body).toHaveProperty("response")
+        })
+    })
+})
+
+
+describe.only("GET /api/articles/:article_id", () => {
+    test("returns an article object for the article for that id path", () => {
+        return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({body}) => {
+            const desiredArticle = body.response
+            
+            expect(typeof desiredArticle).toBe("object")
+            expect(Object.keys(desiredArticle)).toHaveLength(8)
+
+            expect(desiredArticle).toHaveProperty("author")
+            expect(desiredArticle).toHaveProperty("title")
+            expect(desiredArticle).toHaveProperty("article_id")
+            expect(desiredArticle).toHaveProperty("body")
+        })
+    })
+    test("returns an error for invalid id path", () => {
+        return request(app)
+        .get("/api/articles/99999")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("please provide a valid numerical id path")
+        })
+    })
+    test("returns an error for non integer id path", () => {
+        return request(app)
+        .get("/api/articles/notAnId")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe("please provide a valid numerical id path")
         })
     })
 })

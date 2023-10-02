@@ -15,3 +15,11 @@ exports.fetchAllEndpoints = () => {
     })
 }
 
+exports.fetchArticleById = (article_id) => {
+    
+    const query = `SELECT * FROM articles;`
+    return db.query(query).then((result) => {
+        article_id --
+        return(result.rows[article_id])
+    })
+}

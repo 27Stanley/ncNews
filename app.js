@@ -1,5 +1,5 @@
 const express = require("express")
-const {getAllTopics, getAllEndpoints} = require ("./controller/app.controller.js")
+const {getAllTopics, getAllEndpoints, getArticleById} = require ("./controller/app.controller.js")
 
 const app = express()
 
@@ -8,6 +8,8 @@ const app = express()
 app.get(`/api/topics`, getAllTopics)
 
 app.get(`/api`, getAllEndpoints)
+
+app.get(`/api/articles/:article_id`, getArticleById)
 
 
 app.all("/*", (req, res, next) => {
