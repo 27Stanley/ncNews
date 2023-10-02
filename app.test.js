@@ -37,3 +37,15 @@ describe("GET /api/topics", () => {
         })
     })
 })
+
+describe("GET /api", () => {
+    test("returns a json representation of all the available endpoints of the api", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({body}) => {
+            expect(typeof body).toBe("object")
+            expect(body).toHaveProperty("response")
+        })
+    })
+})
