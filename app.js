@@ -17,7 +17,20 @@ app.all("/*", (req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    res.status(500).send('Server Error!');
+    if(err.status){
+        console.log(err)
+        res.status(404).send({message})
+    }
+
+})
+
+app.use((err, req, res, next) => {
+    if (err.status && err.msg) {
+        res.status(404).send({ msg: "no article found at article id" });
+    } else {
+        console.log(err, 'unhandled error here')
+        res.status(500).send('Server Error!');
+    }
   });
 
 module.exports = app

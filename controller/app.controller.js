@@ -27,11 +27,8 @@ exports.getAllEndpoints = (req, res, next) => {
 exports.getArticleById = (req, res, next) => {
     const {article_id} = req.params
 
-    if (article_id > 13){
-        return res.status(404).send({message: "please provide a valid numerical id path"})
-    }
-    else if (!Number(article_id)){
-        return res.status(400).send({message: "please provide a valid numerical id path"})
+    if (!Number(article_id)){
+        return res.status(400).send({message: "invalid id path"})
     }
 
     fetchArticleById(article_id)
@@ -39,6 +36,10 @@ exports.getArticleById = (req, res, next) => {
         res.status(200).send({response})
     })
     .catch((err) => {
-        next(err)
+        if (err) {
+            res.status(404).send({message: "article not found"})
+        } else{
+            next(err)
+        }
     })
 }

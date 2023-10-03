@@ -15,11 +15,18 @@ exports.fetchAllEndpoints = () => {
     })
 }
 
-exports.fetchArticleById = (article_id) => {
+exports.fetchArticleById = async (article_id) => {
+    const sizeArticlesQuery = `SELECT COUNT(*) FROM articles;`
+    const sizeArticles = await db.query(sizeArticlesQuery)
     
-    const query = `SELECT * FROM articles;`
-    return db.query(query).then((result) => {
-        article_id --
-        return(result.rows[article_id])
+    if (article_id > Number(sizeArticles.rows[0].count)){
+        return Promise.reject({
+            status:404
+        })
+    }
+
+    const query = `SELECT * FROM articles WHERE article_id = $1;`
+    return db.query(query, [article_id]).then((result) => {
+        return(result.rows[0])
     })
 }
