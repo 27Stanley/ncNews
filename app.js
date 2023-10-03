@@ -1,5 +1,5 @@
 const express = require("express")
-const {getAllTopics, getAllEndpoints, getArticleById} = require ("./controller/app.controller.js")
+const {getAllTopics, getAllEndpoints, getArticleById, getAllArticles} = require ("./controller/app.controller.js")
 
 const app = express()
 
@@ -10,6 +10,8 @@ app.get(`/api/topics`, getAllTopics)
 app.get(`/api`, getAllEndpoints)
 
 app.get(`/api/articles/:article_id`, getArticleById)
+
+app.get(`/api/articles`, getAllArticles)
 
 
 app.all("/*", (req, res, next) => {
@@ -25,6 +27,7 @@ app.use((err, req, res, next) => {
         console.log(err)
         res.status(404).send({message: "article not found"})
     }
+    next()
 })
 
 app.use((err, req, res, next) => {
