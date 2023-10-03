@@ -27,19 +27,11 @@ exports.getAllEndpoints = (req, res, next) => {
 exports.getArticleById = (req, res, next) => {
     const {article_id} = req.params
 
-    if (!Number(article_id)){
-        return res.status(400).send({message: "invalid id path"})
-    }
-
     fetchArticleById(article_id)
     .then((response) => {
         res.status(200).send({response})
     })
     .catch((err) => {
-        if (err) {
-            res.status(404).send({message: "article not found"})
-        } else{
-            next(err)
-        }
+        next(err)
     })
 }

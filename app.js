@@ -17,20 +17,20 @@ app.all("/*", (req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    if(err.status){
+    if (err.status === 400){
         console.log(err)
-        res.status(404).send({message})
+        res.status(400).send({message: "invalid id path"})
     }
-
+    if (err.status === 404){
+        console.log(err)
+        res.status(404).send({message: "article not found"})
+    }
 })
 
 app.use((err, req, res, next) => {
-    if (err.status && err.msg) {
-        res.status(404).send({ msg: "no article found at article id" });
-    } else {
-        console.log(err, 'unhandled error here')
-        res.status(500).send('Server Error!');
-    }
-  });
+    console.log(err, 'unhandled error here')
+    res.status(500).send('Server Error!');
+})
+
 
 module.exports = app
