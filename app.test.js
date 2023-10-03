@@ -95,3 +95,33 @@ describe("GET /api/articles/:article_id", () => {
         })
     })
 })
+
+
+describe("GET /api/articles", () => {
+    test("returns all articles on this endpoint", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+            let resBody = body.response
+
+            expect(Object.keys(resBody[2])).toHaveLength(8)
+            expect(resBody)
+
+            expect(resBody[7]).toEqual(
+                expect.objectContaining({
+                    article_id: expect.any(Number),
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String)
+                })
+            )
+
+            expect(resBody).toBeSortedBy("created_at", {descending : true})
+        })
+    })
+})
