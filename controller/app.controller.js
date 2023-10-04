@@ -2,7 +2,13 @@
 //     res.status(200).send({message: "test"})
 // }
 
-const {fetchAllTopics, fetchAllEndpoints, fetchArticleById, fetchAllArticles} = require("../model/app.model.js")
+const {
+    fetchAllTopics, 
+    fetchAllEndpoints, 
+    fetchArticleById, 
+    fetchAllArticles, 
+    fetchCommentsByArticleId
+} = require("../model/app.model.js")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -42,6 +48,19 @@ exports.getAllArticles = (req, res, next) => {
         res.status(200).send({response})
     })
     .catch((err) => {
+        next(err)
+    })
+}
+
+exports.getArticleCommentsById = (req, res, next) => {
+    const {article_id} = req.params
+    fetchArticleById(article_id)
+    .then(() => {
+        return fetchCommentsByArticleId(article_id)})
+    .then((response) => {
+        res.status(200).send({comments: response})
+        })
+        .catch((err) => {
         next(err)
     })
 }

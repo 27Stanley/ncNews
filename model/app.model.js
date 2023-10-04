@@ -1,5 +1,6 @@
 const db = require ("../db/connection.js")
 const fs = require("fs/promises")
+const {checkExists} = require("../db/seeds/utils.js")
 
 exports.fetchAllTopics = () => {
     const query = `SELECT * FROM topics;`
@@ -18,14 +19,16 @@ exports.fetchAllEndpoints = () => {
 exports.fetchArticleById = (article_id) => {
     if (!Number(article_id)) {
         return Promise.reject({
-            status:400
+            status:400,
+            message: "invalid id path"
         })
     } else {
         const query = `SELECT * FROM articles WHERE article_id = $1;`
         return db.query(query, [article_id]).then((result) => {
             if (result.rows.length === 0){
                 return Promise.reject({
-                    status:404
+                    status:404,
+                    message: "article not found"
                 })
             }
             return(result.rows[0])
@@ -43,6 +46,14 @@ exports.fetchAllArticles = () => {
     `
 
     return db.query(query).then((result) => {
+        return result.rows
+    })
+}
+
+exports.fetchCommentsByArticleId = async (article_id) => { 
+    const query = `SELECT * FROM comments WHERE article_id = $1;`
+
+    return db.query(query, [article_id]).then((result) => {
         return result.rows
     })
 }

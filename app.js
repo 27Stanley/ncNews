@@ -1,5 +1,11 @@
 const express = require("express")
-const {getAllTopics, getAllEndpoints, getArticleById, getAllArticles} = require ("./controller/app.controller.js")
+const {
+    getAllTopics, 
+    getAllEndpoints, 
+    getArticleById, 
+    getAllArticles, 
+    getArticleCommentsById
+} = require ("./controller/app.controller.js")
 
 const app = express()
 
@@ -13,27 +19,25 @@ app.get(`/api/articles/:article_id`, getArticleById)
 
 app.get(`/api/articles`, getAllArticles)
 
+app.get(`/api/articles/:article_id/comments`, getArticleCommentsById)
+
+
+const {
+    handlePSQLErrors,
+    handle404Errors,
+    handleServerErrors
+} = require("./controller/errors.controller.js")
+
 
 app.all("/*", (req, res, next) => {
     res.status(404).send({message: "path not found"})
 })
 
-app.use((err, req, res, next) => {
-    if (err.status === 400){
-        console.log(err)
-        res.status(400).send({message: "invalid id path"})
-    }
-    if (err.status === 404){
-        console.log(err)
-        res.status(404).send({message: "article not found"})
-    }
-    next()
-})
+app.use(handlePSQLErrors)
 
-app.use((err, req, res, next) => {
-    console.log(err, 'unhandled error here')
-    res.status(500).send('Server Error!');
-})
+app.use(handle404Errors)
+
+app.use(handleServerErrors)
 
 
 module.exports = app

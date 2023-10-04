@@ -25,6 +25,9 @@ ORDER BY created_at DESC;
 
 
 
+SELECT * FROM comments WHERE article_id = 1;
+SELECT * FROM comments WHERE article_id = 2;
+
 -- SELECT * FROM article_comment_count;
 
 --count the comment_id associated with each article_id

@@ -128,3 +128,71 @@ describe("GET /api/articles", () => {
         })
     })
 })
+
+describe("GET /api/articles/:article_id/comments", () => {
+    test("400: returns an error when given article id is not a number type", () => {
+        return request(app)
+        .get("/api/articles/notANumber/comments")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe("invalid id path")
+        })
+    })
+    
+    test("404: returns an error when given an article id path that does not exist", () => {
+        return request(app)
+        .get("/api/articles/999/comments")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("article not found")    
+        })
+    })
+
+    test("returns an empty array when the given article id does not have any comments.", () => {
+        return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({body}) => {
+            expect(body.comments).toHaveLength(0)
+        })
+    })
+
+    test("returns a single object array when the article only has one comment.", () => {
+        return request(app)
+        .get("/api/articles/6/comments")
+        .expect(200)
+        .then(({body}) => {
+            expect(body.comments).toHaveLength(1)
+            expect(body.comments[0]).toEqual(
+                expect.objectContaining({
+                body: expect.any(String),
+                article_id: expect.any(Number),
+                author: expect.any(String),
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+                })
+            )
+        })
+    })
+
+    test("returns an array of comment objects when the article has multiple comments.", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+            expect(body.comments).toHaveLength(11)
+
+            body.comments.forEach((item) => {
+                expect(item).toEqual(
+                    expect.objectContaining({
+                    body: expect.any(String),
+                    article_id: expect.any(Number),
+                    author: expect.any(String),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String)
+                    })
+                )
+            })
+        })
+    })
+})
