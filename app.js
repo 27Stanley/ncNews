@@ -22,27 +22,22 @@ app.get(`/api/articles`, getAllArticles)
 app.get(`/api/articles/:article_id/comments`, getArticleCommentsById)
 
 
+const {
+    handlePSQLErrors,
+    handle404Errors,
+    handleServerErrors
+} = require("./controller/errors.controller.js")
+
+
 app.all("/*", (req, res, next) => {
     res.status(404).send({message: "path not found"})
 })
 
-app.use((err, req, res, next) => {
-    if (err.status === 400 && err.message === "invalid id path"){
-        res.status(400).send({message: "invalid id path"})
-    }
-    next(err)
-})
+app.use(handlePSQLErrors)
 
-app.use((err, req, res, next) => {
-    if (err.status === 404 && err.message === "article not found"){
-        res.status(404).send({message: "article not found"})
-    }
-    next(err)
-})
+app.use(handle404Errors)
 
-app.use((err, req, res, next) => {
-    res.status(500).send('Server Error!');
-})
+app.use(handleServerErrors)
 
 
 module.exports = app

@@ -130,7 +130,7 @@ describe("GET /api/articles", () => {
 })
 
 describe("GET /api/articles/:article_id/comments", () => {
-    test("returns an error when given article id is not a number type", () => {
+    test("400: returns an error when given article id is not a number type", () => {
         return request(app)
         .get("/api/articles/notANumber/comments")
         .expect(400)
@@ -139,7 +139,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         })
     })
     
-    test("returns an error when given an article id path that does not exist", () => {
+    test("404: returns an error when given an article id path that does not exist", () => {
         return request(app)
         .get("/api/articles/999/comments")
         .expect(404)
@@ -183,18 +183,16 @@ describe("GET /api/articles/:article_id/comments", () => {
             expect(body.comments).toHaveLength(11)
 
             body.comments.forEach((item) => {
-                expect(Object.keys(item)).toHaveLength(6)
+                expect(item).toEqual(
+                    expect.objectContaining({
+                    body: expect.any(String),
+                    article_id: expect.any(Number),
+                    author: expect.any(String),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String)
+                    })
+                )
             })
-
-            expect(body.comments[0]).toEqual(
-                expect.objectContaining({
-                body: expect.any(String),
-                article_id: expect.any(Number),
-                author: expect.any(String),
-                votes: expect.any(Number),
-                created_at: expect.any(String)
-                })
-            )
         })
     })
 })

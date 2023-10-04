@@ -20,16 +20,3 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
-
-const format = require("pg-format")
-const db = require ("../connection.js")
-
-exports.checkExists = async (table, column, value) => {
-  console.log("hello, we in utils")
-  const query = format(`SELECT * FROM %I = $1`, table, column);
-  const dbOutput = await db.query(query, [value])
-
-  if (dbOutput.rows.length === 0) {
-    return Promise.reject({status: 404, message: "article not found"})
-  }
-}
