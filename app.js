@@ -16,6 +16,11 @@ const {
     patchArticleVotes
 } = require ("./controller/app.patch.controller.js")
 
+const {
+    deleteComment
+} = require ("./controller/app.delete.controller.js")
+
+
 const app = express()
 
 app.use(express.json())
@@ -36,10 +41,12 @@ app.post(`/api/articles/:article_id/comments`, postComment)
 
 app.patch(`/api/articles/:article_id`, patchArticleVotes)
 
+app.delete(`/api/comments/:comment_id`, deleteComment)
 
 app.all("/*", (req, res, next) => {
     res.status(404).send({message: "path not found"})
 })
+
 
 const {
     handlePSQLErrors,
