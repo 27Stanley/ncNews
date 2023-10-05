@@ -6,12 +6,15 @@ exports.handlePSQLErrors = (err, req, res, next) => {
         res.status(404).send({message: "username not found"})
     }
     if (err.code === "23502") {
-        res.status(400).send({message: "comment body insufficient"})
+        res.status(400).send({message: "passed information insufficient"})
     }
     next(err)
 }
 
 exports.handleCustomErrors = (err, req, res, next) => {
+    // if (err.status && err.message){
+    //     res.status(err.status).send(err.message)
+    // }
     if (err.status === 404 && err.message === "article not found"){
         res.status(404).send({message: "article not found"})
     }
