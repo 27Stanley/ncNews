@@ -10,7 +10,6 @@ exports.postComment = (req, res, next) => {
 
     insertComment(article_id, commentToAdd).then((postedComment) => {
         res.status(201).send({
-            message: "comment posted",
             comment: postedComment.rows[0]
         })
     }).catch((err) => {

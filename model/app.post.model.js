@@ -1,6 +1,4 @@
 const db = require ("../db/connection.js")
-const fs = require("fs/promises")
-const format = require("pg-format")
 
 exports.insertComment = (article_id, newComment) => {
     const {username, body} = newComment

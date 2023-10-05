@@ -197,7 +197,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     })
 })
 
-describe.only("POST /api/articles/:article_id/comments", () => {
+describe("POST /api/articles/:article_id/comments", () => {
     test("404: returns error when invalid username used", () => {
         const invalidComment = {
             username: "TEST-USERNAME!!!!!!!",
@@ -253,8 +253,6 @@ describe.only("POST /api/articles/:article_id/comments", () => {
         .send(validComment)
         .expect(201)
         .then(({body}) => {
-            
-            expect(body.message).toBe("comment posted");
 
             expect(body.comment).toEqual(expect.objectContaining({
                 comment_id: expect.any(Number),
