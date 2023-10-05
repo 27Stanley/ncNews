@@ -238,7 +238,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         .send(inValidComment)
         .expect(400)
         .then(({body}) => {
-            expect(body.message).toBe("comment body insufficient") 
+            expect(body.message).toBe("passed information insufficient") 
         })        
     })
 
@@ -264,5 +264,81 @@ describe("POST /api/articles/:article_id/comments", () => {
             }))
         })
 
+    })
+})
+
+describe("PATCH /api/articles/:article_id", ()=> {
+    test("200: returns article when incremented votes property passed with postive number", () => {
+        const votesToIncrement = {
+            inc_votes : 1
+        }
+
+        return request(app)
+        .patch(`/api/articles/2`)
+        .send(votesToIncrement)
+        .expect(200)
+        .then(({body}) => {
+            expect(typeof body).toBe("object")
+
+            expect(body).toEqual(expect.objectContaining({
+                article_id: expect.any(Number),
+                title: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String)
+            }))
+        })
+    })
+
+    test("200: returns article when incremented votes property passed with negative number", () => {
+        const votesToIncrement = {
+            inc_votes : -1
+        }
+
+        return request(app)
+        .patch(`/api/articles/1`)
+        .send(votesToIncrement)
+        .expect(200)
+        .then(({body}) => {
+            expect(typeof body).toBe("object")
+
+            expect(body).toEqual(expect.objectContaining({
+                article_id: expect.any(Number),
+                title: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String)
+            }))
+        })
+    })
+
+    test("400: returns error when insufficient vote increment data", () => {
+        const votesToIncrement = { }
+
+        return request(app)
+        .patch(`/api/articles/2`)
+        .send(votesToIncrement)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe("passed information insufficient") 
+        })        
+    })
+
+    test("404: returns error when article id doesnt exist", () => {
+        const votesToIncrement = {
+            inc_votes : 1
+        }
+
+        return request(app)
+        .patch(`/api/articles/999`)
+        .send(votesToIncrement)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("article not found") 
+        })        
     })
 })
