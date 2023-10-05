@@ -196,3 +196,73 @@ describe("GET /api/articles/:article_id/comments", () => {
         })
     })
 })
+
+describe("POST /api/articles/:article_id/comments", () => {
+    test("404: returns error when invalid username used", () => {
+        const invalidComment = {
+            username: "TEST-USERNAME!!!!!!!",
+            body: "TEST-COMMENT-BODY!!!!!!!"
+        }
+
+        return request(app)
+        .post(`/api/articles/2/comments`)
+        .send(invalidComment)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("username not found")
+        })
+    })
+
+    test("404: returns error when article id not found", () => {
+        const validComment = {
+            username: "butter_bridge",
+            body: "TEST-COMMENT-BODY"
+        }
+
+        return request(app)
+        .post(`/api/articles/999/comments`)
+        .send(validComment)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("article not found") 
+        })        
+    })
+
+    test("400: returns error when insufficient comment information provided", () => {
+        const inValidComment = {
+            body: "TEST-COMMENT-BODY"
+        }
+
+        return request(app)
+        .post(`/api/articles/2/comments`)
+        .send(inValidComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe("comment body insufficient") 
+        })        
+    })
+
+    test("201: and returns message with comment body", () => {
+        const validComment = {
+            username: "butter_bridge",
+            body: "TEST-COMMENT-BODY"
+        }
+
+        return request(app)
+        .post(`/api/articles/2/comments`)
+        .send(validComment)
+        .expect(201)
+        .then(({body}) => {
+
+            expect(body.comment).toEqual(expect.objectContaining({
+                comment_id: expect.any(Number),
+                body: expect.any(String),
+                article_id: expect.any(Number),
+                author: expect.any(String),
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+            }))
+        })
+
+    })
+})

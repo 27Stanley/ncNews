@@ -1,4 +1,5 @@
 const express = require("express")
+
 const {
     getAllTopics, 
     getAllEndpoints, 
@@ -7,7 +8,13 @@ const {
     getArticleCommentsById
 } = require ("./controller/app.controller.js")
 
+const {
+    postComment
+} = require ("./controller/app.post.controller.js")
+
 const app = express()
+
+app.use(express.json())
 
 // app.get(`/api/healthCheck`, healthCheck)
 
@@ -21,21 +28,22 @@ app.get(`/api/articles`, getAllArticles)
 
 app.get(`/api/articles/:article_id/comments`, getArticleCommentsById)
 
-
-const {
-    handlePSQLErrors,
-    handle404Errors,
-    handleServerErrors
-} = require("./controller/errors.controller.js")
+app.post(`/api/articles/:article_id/comments`, postComment)
 
 
 app.all("/*", (req, res, next) => {
     res.status(404).send({message: "path not found"})
 })
 
+const {
+    handlePSQLErrors,
+    handleCustomErrors,
+    handleServerErrors
+} = require("./controller/errors.controller.js")
+
 app.use(handlePSQLErrors)
 
-app.use(handle404Errors)
+app.use(handleCustomErrors)
 
 app.use(handleServerErrors)
 
