@@ -1,6 +1,5 @@
 const db = require ("../db/connection.js")
 const fs = require("fs/promises")
-const {checkExists} = require("../db/seeds/utils.js")
 
 exports.fetchAllTopics = () => {
     const query = `SELECT * FROM topics;`
