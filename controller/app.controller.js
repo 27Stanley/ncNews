@@ -37,7 +37,9 @@ exports.getArticleById = (req, res, next) => {
 
     fetchArticleById(article_id)
     .then((response) => {
-        res.status(200).send({response})
+        const commentCount = response[1].rows
+
+        res.status(200).send({response: response[0], commentCount})
     })
     .catch((err) => {
         next(err)

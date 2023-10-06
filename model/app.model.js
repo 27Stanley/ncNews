@@ -23,6 +23,7 @@ exports.fetchArticleById = (article_id) => {
         })
     } else {
         const query = `SELECT * FROM articles WHERE article_id = $1;`
+
         return db.query(query, [article_id]).then((result) => {
             if (result.rows.length === 0){
                 return Promise.reject({
@@ -30,7 +31,18 @@ exports.fetchArticleById = (article_id) => {
                     message: "article not found"
                 })
             }
-            return(result.rows[0])
+
+            const commentCountQuery = `
+            SELECT CAST(COUNT(comment_id) AS INT) AS comment_count
+            FROM articles
+            LEFT JOIN comments ON articles.article_id = comments.article_id
+            WHERE articles.article_id = $1
+            GROUP BY articles.article_id;
+            `
+
+            const commentCountAtArticleId = (db.query(commentCountQuery, [article_id]))
+
+            return Promise.all([result.rows[0],commentCountAtArticleId ])
         })
     }
 }

@@ -47,7 +47,7 @@ app.patch(`/api/articles/:article_id`, patchArticleVotes)
 
 app.delete(`/api/comments/:comment_id`, deleteComment)
 
-app.get(`/api/users`, getAllUsers)
+app.get(`/api/users`, getAllUsers)  
 
 
 

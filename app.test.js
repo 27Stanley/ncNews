@@ -76,8 +76,15 @@ describe("GET /api/articles/:article_id", () => {
                     article_img_url: expect.any(String)
                 })
             )
+            
+            const commentCount = body.commentCount[0]
+            expect(commentCount).toEqual({ comment_count: 2 })
+
+
+
         })
     })
+
     test("returns an error when article id does not exist", () => {
         return request(app)
         .get("/api/articles/99999")
@@ -86,6 +93,7 @@ describe("GET /api/articles/:article_id", () => {
             expect(body.message).toBe("article not found")
         })
     })
+
     test("returns an error for non integer id path", () => {
         return request(app)
         .get("/api/articles/notAnId")
@@ -94,6 +102,7 @@ describe("GET /api/articles/:article_id", () => {
             expect(body.message).toBe("invalid id path")
         })
     })
+
 })
 
 
