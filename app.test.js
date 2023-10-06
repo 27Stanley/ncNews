@@ -103,7 +103,7 @@ describe("GET /api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({body}) => {
-            let resBody = body.response
+            let resBody = body.articles
             resBody.forEach((item) => {
                 expect(Object.keys(item)).toHaveLength(8)
             })
@@ -413,11 +413,11 @@ describe("GET /api/articles?topic=", () => {
         .get("/api/articles?topic=mitch")
         .expect(200)
         .then(({body}) => {
-            const resBody = body.response
-
+            const resBody = body.articles
             expect(typeof body).toBe("object")
 
             resBody.forEach((item) => {
+                expect(Object.keys(item)).toHaveLength(8)
                 expect(item).toEqual(
                     expect.objectContaining({
                         article_id: expect.any(Number),
@@ -452,9 +452,12 @@ describe("GET /api/articles?topic=", () => {
         })
     })
 
-    test("204: returns no content when topic exists, but no articles listed under that topic", () => {
+    test("200: returns empty array when topic exists, but no article under that topic", () => {
         return request(app)
         .get("/api/articles?topic=paper")
-        .expect(204)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toEqual([])
+        })
     })
 })

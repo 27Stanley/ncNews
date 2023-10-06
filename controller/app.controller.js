@@ -49,12 +49,8 @@ exports.getAllArticles = (req, res, next) => {
 
     if (topic || topic === ""){
         fetchArticlesByTopicQuery(topic)
-        .then((response) => {
-            if (response.length === 0){
-                res.status(204).send()
-            } else {
-            res.status(200).send({response})
-            }  
+        .then((articles) => {
+            res.status(200).send({articles})
         })
         .catch((err) => {
             next(err)
@@ -62,8 +58,8 @@ exports.getAllArticles = (req, res, next) => {
 
     } else {
         fetchAllArticles()
-        .then((response) => {
-            res.status(200).send({response})
+        .then((articles) => {
+            res.status(200).send({articles})
         })
         .catch((err) => {
             next(err)
