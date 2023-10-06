@@ -6,7 +6,10 @@ const {
     getArticleById, 
     getAllArticles, 
     getArticleCommentsById,
-    getAllUsers
+    getAllUsers,
+
+    getArticleByTopicQuery
+
 } = require ("./controller/app.controller.js")
 
 const {
@@ -45,6 +48,8 @@ app.patch(`/api/articles/:article_id`, patchArticleVotes)
 app.delete(`/api/comments/:comment_id`, deleteComment)
 
 app.get(`/api/users`, getAllUsers)
+
+
 
 app.all("/*", (req, res, next) => {
     res.status(404).send({message: "path not found"})
