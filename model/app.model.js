@@ -52,6 +52,7 @@ exports.fetchAllArticles = () => {
 exports.fetchCommentsByArticleId = async (article_id) => { 
     const query = `SELECT * FROM comments WHERE article_id = $1;`
 
+
     return db.query(query, [article_id]).then((result) => {
         return result.rows
     })
@@ -65,4 +66,33 @@ exports.fetchAllUsers = () => {
     return db.query(query).then((result) => {
         return result.rows
     })
+}
+
+exports.fetchArticlesByTopicQuery = async (topic) => {
+    const selectTopicsQuery =`SELECT slug FROM topics`
+    let allTopics = await db.query(selectTopicsQuery)
+
+    allTopics = allTopics.rows
+
+    const query = `
+    SELECT * FROM articles
+    WHERE topic = $1
+    `
+
+    const topicStrings = []
+    
+    allTopics.forEach((slug) => {
+        topicStrings.push(slug.slug)
+    })
+
+    return db.query(query, [topic]).then((result) => {
+        if (result.rows.length === 0 && !topicStrings.includes(topic)){
+            return Promise.reject({
+                status: 404,
+                message: "topic not found"
+            })
+        }
+        return result.rows
+    })
+
 }

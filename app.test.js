@@ -103,8 +103,7 @@ describe("GET /api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({body}) => {
-            let resBody = body.response
-
+            let resBody = body.articles
             resBody.forEach((item) => {
                 expect(Object.keys(item)).toHaveLength(8)
             })
@@ -385,6 +384,80 @@ describe("GET /api/users", () => {
                     })
                 )
             }
+        })
+    })
+})
+
+describe("GET /api/users", () => {
+    test("returns an array of users with properties username, name and avatar url", () => {
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({body}) => {
+            for(const user of body.response){
+                expect(user).toEqual(
+                    expect.objectContaining({
+                        username: expect.any(String),
+                        name: expect.any(String),
+                        avatar_url: expect.any(String)
+                    })
+                )
+            }
+        })
+    })
+})
+
+describe("GET /api/articles?topic=", () => {
+    test("returns the articles with topic specified by the path query", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({body}) => {
+            const resBody = body.articles
+            expect(typeof body).toBe("object")
+
+            resBody.forEach((item) => {
+                expect(Object.keys(item)).toHaveLength(8)
+                expect(item).toEqual(
+                    expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String)
+                    })
+                )
+            })
+
+        })
+    })
+
+    test("404: returns error when topic query provided does not exist", () => {
+        return request(app)
+        .get("/api/articles?topic=notATopic")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("topic not found")
+        })
+    })
+
+    test("404: returns error when topic query provided is empty", () => {
+        return request(app)
+        .get("/api/articles?topic=")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("topic not found")
+        })
+    })
+
+    test("200: returns empty array when topic exists, but no article under that topic", () => {
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toEqual([])
         })
     })
 })

@@ -8,7 +8,8 @@ const {
     fetchArticleById, 
     fetchAllArticles, 
     fetchCommentsByArticleId,
-    fetchAllUsers
+    fetchAllUsers,
+    fetchArticlesByTopicQuery
 } = require("../model/app.model.js")
 
 exports.getAllTopics = (req, res, next) => {
@@ -44,25 +45,39 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    fetchAllArticles()
-    .then((response) => {
-        res.status(200).send({response})
-    })
-    .catch((err) => {
-        next(err)
-    })
+    const {topic} = req.query
+
+    if (topic || topic === ""){
+        fetchArticlesByTopicQuery(topic)
+        .then((articles) => {
+            res.status(200).send({articles})
+        })
+        .catch((err) => {
+            next(err)
+        })
+
+    } else {
+        fetchAllArticles()
+        .then((articles) => {
+            res.status(200).send({articles})
+        })
+        .catch((err) => {
+            next(err)
+        })
+    }
 }
 
 exports.getArticleCommentsById = (req, res, next) => {
     const {article_id} = req.params
     fetchArticleById(article_id)
     .then(() => {
-        return fetchCommentsByArticleId(article_id)})
+        return fetchCommentsByArticleId(article_id)
+    })
     .then((response) => {
         res.status(200).send({comments: response})
-        })
-        .catch((err) => {
-        next(err)
+    })
+    .catch((err) => {
+            next(err)
     })
 }
 
@@ -75,3 +90,4 @@ exports.getAllUsers = (req, res, next) => {
         next(err)
     })
 }
+
