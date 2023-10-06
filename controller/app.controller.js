@@ -7,7 +7,8 @@ const {
     fetchAllEndpoints, 
     fetchArticleById, 
     fetchAllArticles, 
-    fetchCommentsByArticleId
+    fetchCommentsByArticleId,
+    fetchAllUsers
 } = require("../model/app.model.js")
 
 exports.getAllTopics = (req, res, next) => {
@@ -61,6 +62,16 @@ exports.getArticleCommentsById = (req, res, next) => {
         res.status(200).send({comments: response})
         })
         .catch((err) => {
+        next(err)
+    })
+}
+
+exports.getAllUsers = (req, res, next) => {
+    fetchAllUsers()
+    .then((response) => {
+        res.status(200).send({response})
+    })
+    .catch((err) => {
         next(err)
     })
 }

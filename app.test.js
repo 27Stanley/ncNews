@@ -370,3 +370,21 @@ describe("DELETE /api/comments/:comment_id", ()=> {
 
 })
 
+describe("GET /api/users", () => {
+    test("returns an array of users with properties username, name and avatar url", () => {
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({body}) => {
+            for(const user of body.response){
+                expect(user).toEqual(
+                    expect.objectContaining({
+                        username: expect.any(String),
+                        name: expect.any(String),
+                        avatar_url: expect.any(String)
+                    })
+                )
+            }
+        })
+    })
+})
