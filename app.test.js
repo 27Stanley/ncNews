@@ -342,3 +342,31 @@ describe("PATCH /api/articles/:article_id", ()=> {
         })        
     })
 })
+
+describe("DELETE /api/comments/:comment_id", ()=> {
+    test("204: returns no content when passed existing comment_id", () => {
+        return request(app)
+        .delete(`/api/comments/18`)
+        .expect(204)
+    })
+
+    test("400: returns error when string type id is passed", () => {
+        return request(app)
+        .delete(`/api/comments/NOTANUMBER`)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe("comment_id is not a number")
+        })
+    })
+
+    test("404: returns error when comment_id does not exist", () => {
+        return request(app)
+        .delete(`/api/comments/999`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe("comment does not exist")
+        })
+    })
+
+})
+
