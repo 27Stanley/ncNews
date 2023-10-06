@@ -55,5 +55,8 @@
         }
       ]
     }
+  },
+  "DELETE `/api/comments/:comments_id`" :{
+    "description": "returns 204 no content, only 204 recieved, no response returned"
   }
 }
